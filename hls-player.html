@@ -1,37 +1,34 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HLS Video Player</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <style>
-        body { margin: 0; padding: 0; background: #000; }
-        #video { width: 100%; height: 100vh; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Курс Sportmaster</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body, html { margin:0; padding:0; height:100%; background:#000; }
+    video { width:100%; height:100%; object-fit: contain; }
+  </style>
 </head>
 <body>
-    <video id="video" controls autoplay></video>
-    <script>
-        var video = document.getElementById('video');
-        var videoSrc = 'https://knomary.sportmaster.ru/uploads/hls/curs_detail/70882/master.m3u8';
+  <video id="video" controls autoplay playsinline></video>
 
-        if (Hls.isSupported()) {
-            var hls = new Hls();
-            hls.loadSource(videoSrc);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.play();
-            });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // Для Safari и других с нативной поддержкой HLS
-            video.src = videoSrc;
-            video.addEventListener('loadedmetadata', function() {
-                video.play();
-            });
-        } else {
-            alert('Ваш браузер не поддерживает HLS-видео.');
-        }
-    </script>
+  <script>
+    const video = document.getElementById('video');
+    // Рабочий CORS-прокси (бесплатный и надёжный)
+    const hlsUrl = 'https://corsproxy.io/?' + encodeURIComponent(
+      'https://knomary.sportmaster.ru/uploads/hls/curs_detail/70882/master.m3u8'
+    );
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(hlsUrl);
+      hls.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = hlsUrl;
+    }
+
+    video.play().catch(() => console.log('Автовоспроизведение заблокировано — пользователь должен нажать Play'));
+  </script>
 </body>
 </html>
